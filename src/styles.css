@@ -1,0 +1,122 @@
+:root {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  color: #1f2937;
+}
+
+* { box-sizing: border-box; }
+
+body, html, #root { margin: 0; min-height: 100%; }
+
+body {
+  background: linear-gradient(180deg, #d7f1ff 0%, #e8f9dd 100%);
+}
+
+.app {
+  min-height: 100vh;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+}
+
+.panel {
+  padding: 1.2rem;
+  border-radius: 20px;
+}
+
+.glass {
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+h1 { margin-top: 0; }
+.controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+button {
+  border: none; border-radius: 999px; padding: 0.6rem 1rem;
+  background: #15803d; color: #fff; font-weight: 700; cursor: pointer;
+}
+button.secondary { background: #2563eb; }
+input[type='range'] { width: 100%; margin: 0.5rem 0 1rem; }
+
+.meters { margin-top: 0.5rem; }
+.meter-row { display: flex; justify-content: space-between; font-size: 0.9rem; }
+.meter-track {
+  height: 12px; border-radius: 999px; overflow: hidden;
+  background: rgba(17,24,39,0.15); margin: 0.2rem 0 0.6rem;
+}
+.meter-fill { height: 100%; transition: width 220ms ease; }
+.meter-fill.leise { background: #22c55e; }
+.meter-fill.laut { background: #f97316; }
+.meter-fill.calm { background: linear-gradient(90deg, #4ade80, #16a34a); }
+
+.status { font-weight: 700; margin: 0.4rem 0; }
+.status.laut { color: #c2410c; }
+.status.leise { color: #166534; }
+.error { color: #b91c1c; }
+
+.forest {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 70vh;
+  background: #d7f1ff;
+}
+
+.sky-gradient { position: absolute; inset: 0; background: linear-gradient(180deg, #a5e3ff 0%, #d7f9ff 60%, #c8efbf 100%); }
+.sun {
+  position: absolute; top: 8%; right: 10%; width: 70px; height: 70px;
+  border-radius: 50%; background: #fde68a; box-shadow: 0 0 40px #fde68a;
+}
+.hill { position: absolute; border-radius: 50%; }
+.hill-back { width: 140%; height: 58%; background: #7ac987; bottom: 20%; left: -20%; }
+.hill-front { width: 160%; height: 52%; background: #4d9f66; bottom: -15%; left: -30%; }
+.trees {
+  position: absolute; bottom: 28%; left: 5%; right: 5%; height: 130px;
+  background-image: radial-gradient(circle at 10% 90%, #2f855a 0 24px, transparent 25px),
+    radial-gradient(circle at 25% 95%, #276749 0 18px, transparent 19px),
+    radial-gradient(circle at 45% 90%, #2f855a 0 22px, transparent 23px),
+    radial-gradient(circle at 60% 95%, #276749 0 20px, transparent 21px),
+    radial-gradient(circle at 80% 90%, #2f855a 0 24px, transparent 25px);
+}
+
+.animal {
+  position: absolute;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  opacity: 0;
+  transform: translateY(20px) scale(0.7);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+.bird { animation: float 4s ease-in-out infinite; }
+.bird-1 { top: 24%; left: 24%; }
+.bird-2 { top: 18%; left: 58%; animation-delay: 1s; }
+
+.butterfly { animation: flutter 2.4s ease-in-out infinite; }
+.butterfly-1 { top: 52%; left: 30%; }
+.butterfly-2 { top: 46%; left: 68%; animation-delay: 0.6s; }
+
+.deer {
+  bottom: 16%; left: 56%; font-size: clamp(2rem, 4vw, 3.2rem);
+  animation: bob 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-14px) translateX(8px); }
+}
+@keyframes flutter {
+  0%,100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-10px) rotate(8deg); }
+}
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .forest { min-height: 55vh; }
+}
