@@ -7,6 +7,7 @@ Eine moderne, kinderfreundliche Ruhe-App für Klassenräume. Je leiser die Klass
 - 🎙️ Mikrofonzugriff zur Live-Lautstärkemessung
 - 🌳 Ruhiger animierter Wald-Hintergrund
 - 🐦🦋🦌 Tiere erscheinen bei Ruhe und verschwinden bei Lärm
+- 🖱️ Manueller Tiermodus: Tiere per Klick ein-/ausblenden
 - ⚙️ Einstellbarer Lautstärke-Schwellenwert
 - 🖥️ Vollbildmodus für Beamer und Smartboards
 - 📱 Responsives Layout für verschiedene Bildschirmgrößen

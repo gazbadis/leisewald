@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 const ANIMALS = [
-  { id: 'bird-1', emoji: '🐦', className: 'animal bird bird-1' },
-  { id: 'bird-2', emoji: '🕊️', className: 'animal bird bird-2' },
-  { id: 'butterfly-1', emoji: '🦋', className: 'animal butterfly butterfly-1' },
-  { id: 'butterfly-2', emoji: '🦋', className: 'animal butterfly butterfly-2' },
-  { id: 'deer', emoji: '🦌', className: 'animal deer' }
+  { id: 'robin', name: 'Rotkehlchen', type: 'bird', x: 22, y: 26, size: 96, delay: 0 },
+  { id: 'owl', name: 'Eule', type: 'owl', x: 62, y: 20, size: 112, delay: 0.5 },
+  { id: 'butterfly-a', name: 'Schmetterling', type: 'butterfly', x: 30, y: 52, size: 88, delay: 0.2 },
+  { id: 'butterfly-b', name: 'Schmetterling 2', type: 'butterfly', x: 72, y: 46, size: 82, delay: 0.8 },
+  { id: 'deer', name: 'Reh', type: 'deer', x: 56, y: 76, size: 180, delay: 0.3 }
 ];
 
 function App() {
@@ -15,6 +15,10 @@ function App() {
   const [error, setError] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [calmScore, setCalmScore] = useState(0);
+  const [manualMode, setManualMode] = useState(false);
+  const [manualVisible, setManualVisible] = useState(() =>
+    Object.fromEntries(ANIMALS.map((animal) => [animal.id, false]))
+  );
 
   const analyserRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -22,9 +26,13 @@ function App() {
   const rafRef = useRef(null);
 
   const visibleAnimals = useMemo(() => {
-    const count = Math.floor((calmScore / 100) * ANIMALS.length);
-    return ANIMALS.slice(0, Math.min(ANIMALS.length, count));
-  }, [calmScore]);
+    if (manualMode) {
+      return ANIMALS.filter((animal) => manualVisible[animal.id]);
+    }
+
+    const unlocked = Math.max(0, Math.ceil((calmScore / 100) * ANIMALS.length));
+    return ANIMALS.slice(0, Math.min(ANIMALS.length, unlocked));
+  }, [calmScore, manualMode, manualVisible]);
 
   const calmState = volume <= threshold ? 'leise' : 'laut';
 
@@ -64,10 +72,10 @@ function App() {
       setCalmScore((prev) => {
         if (!isListening) return prev;
 
-        const delta = volume <= threshold ? 4 : -6;
+        const delta = volume <= threshold ? 5 : -8;
         return Math.max(0, Math.min(100, prev + delta));
       });
-    }, 300);
+    }, 280);
 
     return () => clearInterval(interval);
   }, [volume, threshold, isListening]);
@@ -91,7 +99,7 @@ function App() {
       analyserRef.current = analyser;
       dataArrayRef.current = dataArray;
       setIsListening(true);
-    } catch (err) {
+    } catch {
       setError('Mikrofonzugriff wurde verweigert oder ist nicht verfügbar.');
       setIsListening(false);
     }
@@ -120,6 +128,10 @@ function App() {
     }
   };
 
+  const toggleManualAnimal = (id) => {
+    setManualVisible((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
     <div className="app">
       <header className="glass panel">
@@ -145,6 +157,28 @@ function App() {
           value={threshold}
           onChange={(e) => setThreshold(Number(e.target.value))}
         />
+
+        <div className="mode-toggle">
+          <span>Tier-Modus</span>
+          <button type="button" className={manualMode ? 'secondary' : ''} onClick={() => setManualMode((v) => !v)}>
+            {manualMode ? 'Manuell (Klick)' : 'Automatisch (Lautstärke)'}
+          </button>
+        </div>
+
+        {manualMode ? (
+          <div className="animal-buttons">
+            {ANIMALS.map((animal) => (
+              <button
+                type="button"
+                key={animal.id}
+                className={manualVisible[animal.id] ? 'chip active' : 'chip'}
+                onClick={() => toggleManualAnimal(animal.id)}
+              >
+                {manualVisible[animal.id] ? `Ausblenden: ${animal.name}` : `Einblenden: ${animal.name}`}
+              </button>
+            ))}
+          </div>
+        ) : null}
 
         <div className="meters">
           <div className="meter-row">
@@ -176,8 +210,12 @@ function App() {
         <div className="trees" />
 
         {visibleAnimals.map((animal) => (
-          <div key={animal.id} className={`${animal.className} visible`}>
-            {animal.emoji}
+          <div
+            key={animal.id}
+            className={`animal ${animal.type} visible`}
+            style={{ left: `${animal.x}%`, top: `${animal.y}%`, width: `${animal.size}px`, animationDelay: `${animal.delay}s` }}
+          >
+            <div className="animal-card" />
           </div>
         ))}
       </main>
